@@ -1,5 +1,12 @@
 # ChatGPT Camera
 
+Open-source personal Android camera and Windows receiver, licensed under [MIT](LICENSE).
+An independent community project; not an official OpenAI application.
+
+[Download releases](https://github.com/mianmianlingqi/chatgpt-camera/releases) · [Development handoff](docs/handoff/00-START-HERE.md)
+
+The repository is public. Earlier references to a private repository describe its development history. Notion links are optional private workspace references; all build and handoff documentation is also included here. Third-party components retain the licenses listed in [THIRD-PARTY-NOTICES.md](THIRD-PARTY-NOTICES.md).
+
 Personal Android camera + Windows foreground Codex attachment receiver, version 0.1.0.
 
 The Windows receiver is implemented, builds, and passes protocol tests. Android APK builds and passes lint with documented warnings. Real Android camera operation and attachment appearance inside Codex have **not** been verified. The UI Automation adapter fails closed into a local queue if the current session cannot be identified.
