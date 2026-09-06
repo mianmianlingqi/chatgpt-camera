@@ -59,8 +59,11 @@ final class CameraController implements AutoCloseable {
             if (map == null) throw new IllegalStateException("相机不支持预览");
             Size[] photos = map.getOutputSizes(ImageFormat.JPEG);
             if (photos == null || photos.length == 0) throw new IllegalStateException("相机不支持 JPEG");
-            Size size = Arrays.stream(photos).filter(s -> (long) s.getWidth() * s.getHeight() <= 5_000_000).max(Comparator.comparingLong(s -> (long) s.getWidth() * s.getHeight())).orElse(photos[photos.length - 1]);
+            int[][] dimensions = new int[photos.length][2];
+            for (int i = 0; i < photos.length; i++) { dimensions[i][0] = photos[i].getWidth(); dimensions[i][1] = photos[i].getHeight(); }
+            Size size = photos[PhotoSize.choose(dimensions)];
             Size[] previews = map.getOutputSizes(SurfaceTexture.class);
+            if (previews == null || previews.length == 0) throw new IllegalStateException("相机不支持预览尺寸");
             Size viewSize = Arrays.stream(previews).filter(s -> s.getWidth() <= 1920 && s.getHeight() <= 1080).min(Comparator.comparingDouble(s -> Math.abs((double) s.getWidth() / s.getHeight() - (double) size.getWidth() / size.getHeight()))).orElse(previews[0]);
             if (preview instanceof PreviewView) ((PreviewView) preview).setAspect(sensorOrientation % 180 == 0 ? viewSize.getWidth() : viewSize.getHeight(), sensorOrientation % 180 == 0 ? viewSize.getHeight() : viewSize.getWidth());
             SurfaceTexture texture = preview.getSurfaceTexture(); if (texture == null) return;

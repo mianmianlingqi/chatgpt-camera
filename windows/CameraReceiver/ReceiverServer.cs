@@ -90,4 +90,9 @@ public sealed class ReceiverServer {
         var address = app.Services.GetRequiredService<IServer>().Features.Get<IServerAddressesFeature>()!.Addresses.First(); Port = new Uri(address).Port;
     }
     public async Task StopAsync() { if (app != null) await app.StopAsync(); }
+    public async Task<int> ClearPhotosAsync(Action<string> recycle) {
+        await transfers.WaitAsync();
+        try { return Store.ClearPhotos(recycle); }
+        finally { transfers.Release(); }
+    }
 }

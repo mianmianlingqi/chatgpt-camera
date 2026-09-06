@@ -58,5 +58,17 @@ public sealed class CaptureStore
         }
     }
     public string ImagePath(string id) { Validate(id); return Path.Combine(directory, id + ".jpg"); }
+    public int ClearPhotos(Action<string> recycle) {
+        lock (gate) {
+            int count = 0;
+            foreach (var record in records.Values.Where(r => r.Hash != null && r.State is not ("received" or "attaching")).ToArray()) {
+                string path = ImagePath(record.Id);
+                if (File.Exists(path)) recycle(path);
+                File.Delete(Path.Combine(directory, record.Id + ".json"));
+                records.Remove(record.Id); count++;
+            }
+            return count;
+        }
+    }
     public IReadOnlyList<CaptureRecord> All() { lock (gate) return records.Values.OrderByDescending(r => r.Created).ToArray(); }
 }

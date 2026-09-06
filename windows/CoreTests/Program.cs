@@ -23,5 +23,14 @@ try {
     Check("restart invalidates stale desktop identity", reopened.Get(id)?.Target == null);
     bool rejected = false; try { store.Reserve("../escape", target); } catch (ArgumentException) { rejected = true; }
     Check("path traversal rejected", rejected);
+    record.State = "held"; store.Save(record); File.WriteAllText(store.ImagePath(id), "synthetic");
+    string extra = Path.Combine(dir, "keep.txt"); File.WriteAllText(extra, "unrelated");
+    var recycled = new List<string>();
+    int cleared = store.ClearPhotos(path => { recycled.Add(path); File.Delete(path); });
+    Check("clear removes received photo and queue record", cleared == 1 && store.Get(id) == null && !File.Exists(store.ImagePath(id)));
+    Check("clear delegates only known photo to recycle", recycled.Count == 1 && recycled[0] == store.ImagePath(id) && File.Exists(extra));
+    Check("cleared record does not return after restart", new CaptureStore(dir).Get(id) == null);
+    var pendingId = Guid.NewGuid().ToString("N"); store.Reserve(pendingId, target);
+    Check("clear preserves pending capture", store.ClearPhotos(_ => throw new Exception("unexpected")) == 0 && store.Get(pendingId) != null);
 } finally { if (Directory.Exists(dir)) Directory.Delete(dir, true); }
 Console.WriteLine($"{total - failures}/{total} passed"); return failures == 0 ? 0 : 1;

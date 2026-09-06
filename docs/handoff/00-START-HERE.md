@@ -4,6 +4,8 @@
 
 ## 五分钟接手
 
+最新功能入口：08-PREVIEW-CLEAR-ASPECT.md。Windows 0.1.2 已加入预览、手动拖拽和清空；Android 0.1.1 修复细长照片尺寸选择。用户已确认拖拽后 Codex 出现附件。
+
 更新：Windows 0.1.1 已增加 USB 数据线通道；Android 沿用 0.1.0。先阅读 06-USB.md 的使用与验证边界，0.1.0 仍是历史基线。
 
 最新实机结果见 07-USB-DEVICE-VERIFICATION.md：一张真实照片通过 USB 到达电脑，双端字节校验一致；因 Codex 会话标识不可识别进入 held，自动附件仍未完成。
