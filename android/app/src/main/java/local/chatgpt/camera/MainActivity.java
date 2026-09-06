@@ -57,7 +57,10 @@ public final class MainActivity extends Activity {
         LinearLayout bottom = new LinearLayout(this); bottom.setPadding(0, dp(12), 0, 0);
         pairButton = button("配对电脑", Color.rgb(33, 49, 51), Color.WHITE); retry = button("重试待传", Color.rgb(33, 49, 51), Color.WHITE);
         bottom.addView(pairButton, new LinearLayout.LayoutParams(0, dp(48), 1)); LinearLayout.LayoutParams retryLayout = new LinearLayout.LayoutParams(0, dp(48), 1); retryLayout.setMargins(dp(10), 0, 0, 0); bottom.addView(retry, retryLayout); root.addView(bottom);
-        TextView footer = text("局域网加密传输 · 仅添加附件，由你发送消息", 11, Color.GRAY); footer.setPadding(0, dp(12), 0, 0); root.addView(footer);
+        Button importImage = button("选择图片 / 传截图", Color.rgb(33,49,51), Color.WHITE);
+        LinearLayout.LayoutParams importLayout = new LinearLayout.LayoutParams(-1,dp(44)); importLayout.topMargin=dp(10); root.addView(importImage,importLayout);
+        importImage.setOnClickListener(v -> { if (!busy) startActivity(new Intent(this,ImportActivity.class).setAction("local.chatgpt.camera.PICK")); });
+        TextView footer = text("USB / Wi-Fi 加密传输 · 仅添加附件，由你发送消息", 11, Color.GRAY); footer.setPadding(0, dp(12), 0, 0); root.addView(footer);
         pairButton.setOnClickListener(v -> pairingOptions()); shutter.setOnClickListener(v -> takePhoto()); retry.setOnClickListener(v -> retryPending());
         updateConnection(); updateButtons();
     }

@@ -13,6 +13,8 @@ The Windows receiver is implemented, builds, and passes protocol tests. Android 
 
 ## Layout
 
+Android 0.1.2 also receives screenshots from the system Share menu and offers a system image picker. Screenshots keep their aspect ratio and arrive in the receiver queue for manual drag into Codex. See [screenshot setup and validation](docs/handoff/09-SCREENSHOT-TRANSFER.md).
+
 Latest: Windows 0.1.2 adds preview, original-file drag-and-drop, and clear-to-Recycle-Bin. Android 0.1.1 prefers 4:3 capture sizes. See [latest behavior and validation](docs/handoff/08-PREVIEW-CLEAR-ASPECT.md). USB photo transport and manual drag into Codex have been confirmed on one physical device; automatic session targeting remains unresolved.
 
 Windows 0.1.1 adds a **连接 USB 数据线** button using ADB reverse. Android 0.1.0 remains compatible. See [USB setup and handoff](docs/handoff/06-USB.md). Enable USB debugging, authorize this computer, connect one USB phone, click the button, then scan the refreshed pairing QR. USB transport and actual Codex attachment still require device acceptance testing.

@@ -4,6 +4,8 @@
 
 ## 五分钟接手
 
+截图传输入口：09-SCREENSHOT-TRANSFER.md。Android 0.1.2 新增系统分享接收和图片选择；Windows 仍沿用 0.1.2。
+
 最新功能入口：08-PREVIEW-CLEAR-ASPECT.md。Windows 0.1.2 已加入预览、手动拖拽和清空；Android 0.1.1 修复细长照片尺寸选择。用户已确认拖拽后 Codex 出现附件。
 
 更新：Windows 0.1.1 已增加 USB 数据线通道；Android 沿用 0.1.0。先阅读 06-USB.md 的使用与验证边界，0.1.0 仍是历史基线。
