@@ -6,6 +6,8 @@
 
 更新：Windows 0.1.1 已增加 USB 数据线通道；Android 沿用 0.1.0。先阅读 06-USB.md 的使用与验证边界，0.1.0 仍是历史基线。
 
+最新实机结果见 07-USB-DEVICE-VERIFICATION.md：一张真实照片通过 USB 到达电脑，双端字节校验一致；因 Codex 会话标识不可识别进入 held，自动附件仍未完成。
+
 1. 克隆私有仓库 https://github.com/mianmianlingqi/chatgpt-camera ，运行 git status 与 git log -3 --oneline。源码初始基线为 7663508；后续交接提交仅补充文档。以 Release v0.1.0 的目标提交为归档基线。
 2. 阅读本页、05-RISKS-NEXT.md、04-VERIFICATION.md。最大未完成项是“真机拍照后，在当前 Codex 的正确输入框看到照片附件”。
 3. 按 03-BUILD-RELEASE.md 复现构建与 40 项核心/协议断言。这些断言不覆盖 Camera2 或 Codex UIA。
