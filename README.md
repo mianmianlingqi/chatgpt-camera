@@ -6,6 +6,8 @@ The Windows receiver is implemented, builds, and passes protocol tests. Android 
 
 ## Layout
 
+Windows 0.1.1 adds a **连接 USB 数据线** button using ADB reverse. Android 0.1.0 remains compatible. See [USB setup and handoff](docs/handoff/06-USB.md). Enable USB debugging, authorize this computer, connect one USB phone, click the button, then scan the refreshed pairing QR. USB transport and actual Codex attachment still require device acceptance testing.
+
 - `android/`: Java / Android Camera2 app, ZXing QR scanner, pinned HTTPS transport.
 - `windows/CameraReceiver/`: .NET 8 Windows Forms + Kestrel TLS server and conservative UI Automation adapter.
 - `windows/CoreTests/`: dependency-free console assertions for target safety and persistent state.

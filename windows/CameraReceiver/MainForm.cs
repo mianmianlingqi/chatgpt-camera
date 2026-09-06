@@ -17,6 +17,7 @@ public sealed class MainForm : Forms.Form {
     private readonly SemaphoreSlim attachGate = new(1);
     private bool quitting;
     public MainForm(string data) {
+        server = new ReceiverServer(data, () => Task.Run(desktop.Capture), r => _ = ProcessAsync(r));
         Text = "ChatGPT 相机 · 电脑接收端"; Width = 740; Height = 1020; MinimumSize = new(720, 820);
         Font = new("Microsoft YaHei UI", 10); BackColor = System.Drawing.Color.FromArgb(245, 247, 250);
         var layout = new Forms.FlowLayoutPanel { Dock = Forms.DockStyle.Fill, FlowDirection = Forms.FlowDirection.TopDown, WrapContents = false, AutoScroll = true, Padding = new(24) };
@@ -28,6 +29,31 @@ public sealed class MainForm : Forms.Form {
         var copyPair = new Forms.Button { Text = "复制配对内容", AutoSize = true }; pairRow.Controls.Add(copyPair);
         var hide = new Forms.Button { Text = "收起到托盘", AutoSize = true }; pairRow.Controls.Add(hide); hide.Click += (_, _) => Hide();
         layout.Controls.Add(pairRow); layout.Controls.Add(status);
+        var usb = new Forms.Button { Text = "连接 USB 数据线", AutoSize = true };
+        layout.Controls.Add(usb);
+        layout.Controls.Add(new Forms.Label { Text = "USB：手机开启 USB 调试并允许此电脑，接好数据线后点击连接。\n无需同一个 Wi-Fi；首次连接后仍需扫码。只连接一台安卓手机。", AutoSize = true, MaximumSize = new(650, 0) });
+        usb.Click += async (_, _) => {
+            if (server.Port == 0) { status.Text = "请先等待接收服务启动成功。"; return; }
+            string? adb = UsbConnection.FindAdb();
+            if (adb == null) {
+                using var picker = new Forms.OpenFileDialog { Title = "选择 Android platform-tools 中的 adb.exe", Filter = "Android Debug Bridge|adb.exe", CheckFileExists = true };
+                if (picker.ShowDialog(this) != Forms.DialogResult.OK) { status.Text = "需要 Android platform-tools。安装后重新点击连接并选择 adb.exe。"; return; }
+                adb = picker.FileName;
+            }
+            usb.Enabled = false; status.Text = "正在建立 USB 通道，请查看手机上的授权提示……";
+            try {
+                var connection = new UsbConnection(args => UsbConnection.ExecuteAsync(adb, args));
+                var result = await connection.ConnectAsync(server.Port);
+                if (IsDisposed) return;
+                if (result.Success) {
+                    if (!hosts.Items.Contains("127.0.0.1")) hosts.Items.Add("127.0.0.1");
+                    hosts.SelectedItem = "127.0.0.1";
+                    RefreshPairing();
+                }
+                status.Text = result.Message;
+            } catch (Exception) { if (!IsDisposed) status.Text = "USB 连接失败，请检查 adb.exe 是否可运行，再重试。"; }
+            finally { if (!IsDisposed) usb.Enabled = true; }
+        };
         layout.Controls.Add(new Forms.Label { Text = "最近照片（状态不明确时，请先检查 Codex 附件）", AutoSize = true, Margin = new(0, 12, 0, 4) });
         layout.Controls.Add(queue);
         var actions = new Forms.FlowLayoutPanel { Width = 660, Height = 45 };
@@ -35,7 +61,6 @@ public sealed class MainForm : Forms.Form {
         var folder = new Forms.Button { Text = "打开接收文件夹", AutoSize = true }; actions.Controls.Add(folder);
         layout.Controls.Add(actions);
         layout.Controls.Add(new Forms.Label { Text = "复制后：回到目标输入框按 Ctrl+V。程序不会发送消息。\n自动附加需要此版本暴露可识别的会话和输入框，否则保留照片。", AutoSize = true, MaximumSize = new(650, 0), ForeColor = System.Drawing.Color.DimGray });
-        server = new ReceiverServer(data, () => Task.Run(desktop.Capture), r => _ = ProcessAsync(r));
         tray = new Forms.NotifyIcon { Icon = System.Drawing.SystemIcons.Application, Text = "ChatGPT 相机", Visible = true };
         var menu = new Forms.ContextMenuStrip(); menu.Items.Add("打开接收端", null, (_, _) => { Show(); Activate(); });
         menu.Items.Add("退出", null, (_, _) => { quitting = true; Close(); }); tray.ContextMenuStrip = menu; tray.DoubleClick += (_, _) => { Show(); Activate(); };
