@@ -30,6 +30,8 @@
 
 清空逻辑通过合成数据测试，但未代用户点击清空其真实照片。新比例算法与 APK 构建已验证，更新安装后新照片的实际分辨率仍待新一轮拍摄确认。
 
+后续实机反馈：用户在更新后明确确认“我已经观察到了比例正常”。因此新拍照片比例已获得用户现场确认；未额外读取新照片尺寸，不编造确切分辨率。预览拖拽附件与比例修复均已通过用户验收。
+
 用户按 Escape 停止 Windows Computer Use 后已停止界面自动操作。后续开发应重新检查当前用户授权与工具状态，不重用失效 UI 观察。
 
 参考：[Windows FileDrop 官方说明](https://learn.microsoft.com/en-us/dotnet/api/system.windows.forms.dataformats.filedrop)。
